@@ -63,27 +63,23 @@ function makeCharts(sample){
     })
 }
 
-//create drowpdown list and make first sample choice
-function init(){
-    let dropdown = d3.select("selDataset")
-    //read in the data
-    d3.json("samples.json").then(function(data) {
-
-        let names = data.names ;
-
-        for(name of names){
-            dropdown.apppend("option").text(name).property("value", name);
-        }
-
-        let firstOpt = names[0]
-
-        optionChanged(firstOpt);
-    })
-
-}
-
 //function for what happens when the option is changed
 function optionChanged(sample) {
     makeCharts(sample);
     showMetadata(sample);
 }
+
+let dropdown = d3.select("selDataset")
+//read in the data
+d3.json("samples.json").then(function(data) {
+
+    let names = data.names ;
+
+    for(name of names){
+        dropdown.apppend("option").text(name).property("value", name);
+    }
+
+    let firstOpt = names[0]
+
+    optionChanged(firstOpt);
+})
