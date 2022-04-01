@@ -1,14 +1,20 @@
 //pull sample metadata
 function showMetadata(sample){
+    let demographics = d3.select("#sample-metadata");
+
     d3.json("samples.json").then(function(data){
         let metadata = data.metadata
         //just get the data for the chosen sample
         let samdata = metadata.filter((sampleJawn) => sampleJawn.id == sample);
-        d3.select("#sample-metadata") = samdata
+        d3.select("#sample-metadata") 
+        console.log(samdata)
+
+        Object.entries(samdata).forEach(([key, value]) => {
+            demographics.append("p").text(`${key}: ${value}`)
+        })
 
     })
 }
-
 
 //use data from sample to create charts
 function makeCharts(sample){
