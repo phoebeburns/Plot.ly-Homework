@@ -38,7 +38,7 @@ function makeCharts(sample) {
                 y: yticks,
                 x: sample_values.slice(0, 10).reverse(),
                 text: otu_labels.slice(0, 10).reverse(),
-                type:"bar" ,
+                type: "bar",
                 orientation: 'h'
             }
 
@@ -51,7 +51,7 @@ function makeCharts(sample) {
                     size: sample_values,
                     color: otu_ids,
                     colorscale: "Earth"
-                                   }
+                }
             }
 
             let data1 = trace1
@@ -64,6 +64,7 @@ function makeCharts(sample) {
                 title: "OTU Quantity Bubbles"
             }
 
+
             Plotly.newPlot("bar", [data1], layout1);
             Plotly.newPlot("bubble", [data2], layout2)
         }
@@ -71,10 +72,50 @@ function makeCharts(sample) {
     })
 }
 
+function makeGauge(sample) {
+
+    d3.json("samples.json").then(function (data) {
+        let metadata = data.metadata
+        //just get the data for the chosen sample
+        let samdata2 = metadata.filter((sampleJawn) => sampleJawn.id == sample);
+        let wfreq = samdata2.wfreq;
+
+        console.log(wfreq)
+
+        let trace3 = {
+            domain: { x: [0, 1], y: [0, 1] },
+            value: 5,
+            title: { text: "Weekly Washing Frequency" },
+            type: "indicator",
+            mode: "gauge+number+delta",
+            gauge: {
+                axis: { range: [0, 9] },
+                steps: [
+                    { range: [0, 1], color: "red" },
+                    { range: [1, 4], color: "yellow" },
+                    { range: [4, 9], color: "green" }
+                ]
+
+            }
+
+        }
+
+        let data3 = trace3;
+        let layout3 = { width: 600, height: 450, margin: { t: 0, b: 0 } };
+
+        Plotly.newPlot('gauge', [data3], layout3);
+
+    })
+
+}
+
+
+
 //function for what happens when the option is changed
 function optionChanged(sample) {
     makeCharts(sample);
     showMetadata(sample);
+    makeGauge(sample);
 }
 
 
