@@ -1,49 +1,57 @@
 //pull sample metadata
-function showMetadata(sample){
+function showMetadata(sample) {
     let demographics = d3.select("#sample-metadata");
 
-    d3.json("samples.json").then(function(data){
+    d3.json("samples.json").then(function (data) {
         let metadata = data.metadata
         //just get the data for the chosen sample
         let samdata = metadata.filter((sampleJawn) => sampleJawn.id == sample);
-        d3.select("#sample-metadata") 
-        console.log(samdata)
 
-        Object.entries(samdata).forEach(([key, value]) => {
-            demographics.append("p").text(`${key}: ${value}`)
-        })
+        demographics.html('')
+
+        for (demographic of samdata) {
+
+            Object.entries(demographic).forEach(([key, value]) => {
+                demographics.append("p").text(`${key}: ${value}`)
+            })
+        }
 
     })
 }
 
 //use data from sample to create charts
-function makeCharts(sample){
-    d3.json("samples.json").then(function(data){
+function makeCharts(sample) {
+    d3.json("samples.json").then(function (data) {
         let samples = data.samples
         //just get the data for the chosen sample
-        let sdata = samples.filter((sampleJawn)=> sampleJawn.id == sample);
+        let sdata = samples.filter((sampleJawn) => sampleJawn.id == sample);
 
         if (sdata.length > 0) {
             let result = sdata[0];
-
+            let sample_values = result.sample_values
             let otu_ids = result.otu_ids;
             let otu_labels = result.otu_labels;
 
+            var yticks = otu_ids.slice(0, 10).map(otuID => `OTU ${otuID}`).reverse();
+
             let trace1 = {
-                x: [otu_ids],
-                y: [sample_values],
-                text: [otu_labels],
-                type: bar,
+                y: yticks,
+                x: sample_values.slice(0, 10).reverse(),
+                text: otu_labels.slice(0, 10).reverse(),
+                type:"bar" ,
                 orientation: 'h'
             }
 
             let trace2 = {
-                x: [otu_ids],
-                y: [sample_values],
-                mode: markers,
-                marker:{
-                    size: [sample_values]
-                }
+                x: otu_ids,
+                y: sample_values,
+                type: "bubble",
+                mode: "markers",
+                marker: {
+                    size: sample_values,
+                    color: otu_ids,
+                    colorscale: "Earth"
+                                   }
             }
 
             let data1 = trace1
@@ -56,8 +64,8 @@ function makeCharts(sample){
                 title: "OTU Quantity Bubbles"
             }
 
-            Plotly.newPlot("bar", data1, layout1);
-            Plotly.newPlot("bubble",data2,layout2)
+            Plotly.newPlot("bar", [data1], layout1);
+            Plotly.newPlot("bubble", [data2], layout2)
         }
 
     })
@@ -69,17 +77,24 @@ function optionChanged(sample) {
     showMetadata(sample);
 }
 
-let dropdown = d3.select("selDataset")
-//read in the data
-d3.json("samples.json").then(function(data) {
 
-    let names = data.names ;
+function init() {
 
-    for(name of names){
-        dropdown.apppend("option").text(name).property("value", name);
-    }
+    let dropdown = d3.select("#selDataset")
+    //read in the data
+    d3.json("samples.json").then(function (data) {
 
-    let firstOpt = names[0]
+        let names = data.names;
 
-    optionChanged(firstOpt);
-})
+        for (let name of names) {
+            dropdown.append("option").text(name).property("value", name);
+        }
+
+        let firstOpt = names[0]
+
+        optionChanged(firstOpt);
+    })
+
+}
+
+init()
