@@ -2,7 +2,7 @@
 function showMetadata(sample) {
     let demographics = d3.select("#sample-metadata");
 
-    d3.json("samples.json").then(function (data) {
+    d3.json("./data/samples.json").then(function (data) {
         let metadata = data.metadata
         //just get the data for the chosen sample
         let samdata = metadata.filter((sampleJawn) => sampleJawn.id == sample);
@@ -21,7 +21,7 @@ function showMetadata(sample) {
 
 //use data from sample to create charts
 function makeCharts(sample) {
-    d3.json("samples.json").then(function (data) {
+    d3.json("./data/samples.json").then(function (data) {
         let samples = data.samples
         //just get the data for the chosen sample
         let sdata = samples.filter((sampleJawn) => sampleJawn.id == sample);
@@ -74,7 +74,7 @@ function makeCharts(sample) {
 
 function makeGauge(sample) {
 
-    d3.json("samples.json").then(function (data) {
+    d3.json("./data/samples.json").then(function (data) {
         let metadata = data.metadata
         //just get the data for the chosen sample
         let samdata = metadata.filter((sampleJawn) => sampleJawn.id == sample)
@@ -126,7 +126,7 @@ function init() {
 
     let dropdown = d3.select("#selDataset")
     //read in the data
-    d3.json("samples.json").then(function (data) {
+    d3.json("./data/samples.json").then(function (data) {
 
         let names = data.names;
 
