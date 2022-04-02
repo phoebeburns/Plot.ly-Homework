@@ -77,19 +77,22 @@ function makeGauge(sample) {
     d3.json("samples.json").then(function (data) {
         let metadata = data.metadata
         //just get the data for the chosen sample
-        let samdata2 = metadata.filter((sampleJawn) => sampleJawn.id == sample);
-        let wfreq = samdata2.wfreq;
+        let samdata = metadata.filter((sampleJawn) => sampleJawn.id == sample)
+        let result = samdata[0];
+
+        let wfreq = result.wfreq
 
         console.log(wfreq)
 
         let trace3 = {
             domain: { x: [0, 1], y: [0, 1] },
-            value: 5,
+            value: wfreq,
             title: { text: "Weekly Washing Frequency" },
             type: "indicator",
-            mode: "gauge+number+delta",
+            mode: "gauge+number",
             gauge: {
                 axis: { range: [0, 9] },
+                bar: { color: "black", width: 1 },
                 steps: [
                     { range: [0, 1], color: "red" },
                     { range: [1, 4], color: "yellow" },
